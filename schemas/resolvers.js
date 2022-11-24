@@ -296,9 +296,6 @@ const resolvers = {
             value: jwt.sign(userForToken,JWT_SECRET)
          }
       },
-      // *********************
-      // *** por acá vamos ***
-      // *********************
       //En esta parte hay que analizar si conviene poner un logout o si eso lo hacemos desde el cliente
 
       
