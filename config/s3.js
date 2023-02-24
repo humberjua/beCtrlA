@@ -12,7 +12,8 @@ const s3 = new aws.S3({
    params: {       
       ACL: 'public-read',                          //ver acá si conviene esto, o si se hará por validación de grupo de usuarios
       Bucket: process.env.AWS_BUCKET        
-    }
-});
+    }   
+  })
 
-export default s3
+  //console.log(s3)
+  export default s3

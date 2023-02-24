@@ -143,7 +143,7 @@ export const gqlMCD = `
 `
 
 //resolvers (query)
-export const companyCount = () => companyData.collection.countDocuments()   //how many companies have Ctrl+A implemented
+export const companyCount = async () => await companyData.collection.countDocuments()   //how many companies have Ctrl+A implemented
 export const allCompanies = async () => {
    return await companyData.find({})      //wich companies have Ctrl+A implemented
 }

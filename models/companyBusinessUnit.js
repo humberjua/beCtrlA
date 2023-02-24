@@ -73,7 +73,7 @@ export const companyBusinessUnitCount = async (root, args) => {
    // returns the amount of business units of the company sought
 }
 export const allBusinessUnits = async () => {
-   return await (await companyBusinessUnit.find({}))
+   return await (companyBusinessUnit.find({}))
    //al business units from all companies... just for admin purposes
 }
 export const businessUnitsFrom = async (root, args) => {   
