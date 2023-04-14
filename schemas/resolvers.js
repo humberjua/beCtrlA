@@ -287,7 +287,7 @@ const resolvers = {
          if (!match) {
             throw new UserInputError('Wrong credentials')               
          }
-        
+      
          const userForToken = {
             username: usr.nickName,
             id: usr._id
@@ -311,7 +311,7 @@ const resolvers = {
       multipleUploadS3                          //To upload a group of files to AWS-S3 cloud storage
    },
    companyData: {
-       address: (root) => `${root.headQuartersCity}, ${root.headQuartersStreet} - ${root.headQuartersNumber}. ZIP CODE = ${root.headQuartersZipCode}`
+      address: (root) => `${root.headQuartersCity}, ${root.headQuartersStreet} - ${root.headQuartersNumber}. ZIP CODE = ${root.headQuartersZipCode}`
    },   
    user: {
       fullName: (root) => `${root.lastName}${root.secondLastName===null?"":" " + root.secondLastName}, ${root.firstName}${root.secondName===null?"":" " + root.secondName}`

@@ -42,7 +42,7 @@ const schema = new mongoose.Schema({
       type: Number,
       required: true
    },
-   FromDay: {
+   fromDay: {
       type: Date,
       required: true,
       minLength:3
@@ -219,7 +219,7 @@ schema.plugin(uniqueValidator)
 export const chart = mongoose.model('chart', schema) 
 
 
-//definitions (type)
+// definitions (type)
 export const gqlChart = `
 type chart {
    idChart:ID!
@@ -230,7 +230,7 @@ type chart {
    isIOSChart:Boolean!
    isWebChart:Boolean!
    maxNumberSeries:Int!
-   FromDay:String!
+   fromDay:String!
    toDay:String!
    x1:String!
    x2:String!
@@ -270,14 +270,14 @@ type chart {
 
 `
 
-//definitions (query)
+// definitions (query)
 export const gqlQChart = `
 chartsCount:Int!
 allCharts:[chart]!
 
 `
 
-//definitions (mutations)
+// definitions (mutations)
 export const gqlMChart = `
 addNewChart(
    chartDescription:String!
@@ -287,7 +287,7 @@ addNewChart(
    isIOSChart:Boolean!
    isWebChart:Boolean!
    maxNumberSeries:Int!
-   FromDay:String!
+   fromDay:String!
    toDay:String!
    x1:String!
    x2:String!
@@ -333,7 +333,7 @@ editChart(
    isIOSChart:Boolean
    isWebChart:Boolean
    maxNumberSeries:Int
-   FromDay:String
+   fromDay:String
    toDay:String
    x1:String
    x2:String
@@ -373,14 +373,14 @@ editChart(
 
 `
 
-//resolvers (query)
+// resolvers (query)
+// chartsCount returns the amount of charts suported and actually loaded in CTRL+A
 export const chartsCount = async () => await chart.collection.countDocuments()
-//returns the amount of charts suported and actually loaded in CTRL+A
+// allCharts returns the complete list of charts suported and actually loaded in CTRL+A
 export const allCharts = async () => await chart.find({})
-//returns the complete list of charts suported and actually loaded in CTRL+A
 
-
-//resolvers ()
+// resolvers (mutation)
+// adds one new Chart into CTRL+A database
 export const addNewChart = async (root, args) => {
    const nCh = new chart({ ...args, idChart: uuid() })
    try {
@@ -391,10 +391,11 @@ export const addNewChart = async (root, args) => {
       })
    }
    return nCh
-   //adds one new chart into CTRL+A data base
+   //returns the new chart created with all args passed
 }
+
+// edits the data previously loaded from the selected chart
 export const editChart = async (root, args) => {
-   
    const ch = await chart.findOne({ idChart: args.idChart })
    if (!ch) return
 
@@ -405,7 +406,7 @@ export const editChart = async (root, args) => {
    if (args.isIOSChart) ch.isIOSChart = args.isIOSChart
    if (args.isWebChart) ch.isWebChart = args.isWebChart
    if (args.maxNumberSeries) ch.maxNumberSeries = args.maxNumberSeries
-   if (args.FromDay) ch.FromDay = args.FromDay
+   if (args.fromDay) ch.fromDay = args.fromDay
    if (args.toDay) ch.toDay = args.toDay
    if (args.x1) ch.x1 = args.x1
    if (args.x2) ch.x2 = args.x2
@@ -450,5 +451,5 @@ export const editChart = async (root, args) => {
       })
    }
    return ch
-   //updates the selected chart
+   //updates the selected chart with all the args passed
 }

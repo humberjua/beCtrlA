@@ -12,10 +12,12 @@
   "license": "ISC",
   "dependencies": {
     "@babel/eslint-parser": "7.19.1",
+    "apollo-log": "^1.1.0",
     "apollo-server": "3.10.3",
     "aws-sdk": "2.1248.0",
     "bcrypt": "5.1.0",
     "dotenv": "16.0.3",
+    "expo-server-sdk": "^3.7.0",
     "graphql": "16.6.0",
     "graphql-upload": "16.0.2",
     "jsonwebtoken": "8.5.1",

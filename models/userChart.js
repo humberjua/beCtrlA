@@ -35,7 +35,7 @@ const schema = new mongoose.Schema({
       type: Number,
       required: true
    },
-   FromDay: {
+   fromDay: {
       type: Date,
       required: true,
       minLength:3
@@ -275,7 +275,7 @@ addNewUserChart(
    chartDescription:String!
    userChartDescription:String!
    showingOrder:Int!
-   FromDay:String!
+   fromDay:String!
    toDay:String!
    x1:String!
    x2:String!
@@ -391,7 +391,7 @@ export const editUserChart = async (root, args, { currentUser }) => {
    if (args.chartDescription) uCh.chartDescription = args.chartDescription
    if (args.userChartDescription) uCh.userChartDescription = args.userChartDescription
    if (args.showingOrder) uCh.showingOrder = args.showingOrder
-   if (args.FromDay) uCh.FromDay = args.FromDay
+   if (args.fromDay) uCh.fromDay = args.fromDay
    if (args.toDay) uCh.toDay = args.toDay
    if (args.x1) uCh.x1 = args.x1
    if (args.x2) uCh.x2 = args.x2

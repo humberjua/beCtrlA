@@ -95,6 +95,11 @@ const schema = new mongoose.Schema({
       type: Number,
       required: true   
    },
+   dateStamp: {
+      type: Date,
+      required: true,
+      minLength:3
+   },
    notificationLevel: {
       type: Number,
       required: true   
@@ -140,6 +145,7 @@ type notification {
    idcompanyJobRole:ID!
    companyJobRoleDescription:String!
    showNotificationsToLevel:Int!
+   dateStamp:String!
    notificationLevel:Int!
    notificationTitle:String!
    notificationDescription:String!
@@ -175,6 +181,7 @@ addNewNotification(
    idcompanyJobRole:ID!
    companyJobRoleDescription:String!
    showNotificationsToLevel:Int!
+   dateStamp:String!
    notificationLevel:Int!
    notificationTitle:String!
    notificationDescription:String!
@@ -199,6 +206,7 @@ editNotification(
    idcompanyJobRole:ID
    companyJobRoleDescription:String
    showNotificationsToLevel:Int
+   dateStamp:String
    notificationLevel:Int
    notificationTitle:String
    notificationDescription:String
@@ -209,15 +217,15 @@ editNotification(
 
 //resolvers (query)
 export const notificationByIdUser = async (root, args) => {   
-    return await notification.filter({ idUser: args.idUser }) 
+   return await notification.filter({ idUser: args.idUser }) 
     //returns the total user's notification list
- }
+}
 export const notificationsToLevel = async (root, args) => {    
-    const { showNotificationsToLevel } = args.showNotificationsToLevel
-    //no se si funcione el <= en mongo... si no funciona hay que armar alguna solución con un if y un for
-    return await notification.find({ idUser: args.idUser, showNotificationsToLevel: `<=${showNotificationsToLevel}` })
-    //should returns the total user's notification from the riskest level (1), to the specified level
- }
+   const { showNotificationsToLevel } = args.showNotificationsToLevel
+   //no se si funcione el <= en mongo... si no funciona hay que armar alguna solución con un if y un for
+   return await notification.find({ idUser: args.idUser, showNotificationsToLevel: `<=${showNotificationsToLevel}` })
+   //should returns the total user's notification from the riskest level (1), to the specified level
+}
 
 
 //resolvers (mutation)
@@ -254,6 +262,7 @@ export const editNotification = async (root, args) => {
    if (args.idcompanyJobRole) notif.idcompanyJobRole = args.idcompanyJobRole
    if (args.companyJobRoleDescription) notif.companyJobRoleDescription = args.companyJobRoleDescription
    if (args.showNotificationsToLevel) notif.showNotificationsToLevel = args.showNotificationsToLevel
+   if (args.dateStamp) notif.dateStamp = args.dateStamp
    if (args.notificationLevel) notif.notificationLevel = args.notificationLevel
    if (args.notificationTitle) notif.notificationTitle = args.notificationTitle
    if (args.notificationDescription) notif.notificationDescription = args.notificationDescription
