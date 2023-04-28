@@ -128,6 +128,24 @@ const schema = new mongoose.Schema({
       type: Boolean,
       required: false,
       default:true
+   },
+   isSuperUser: {
+      type: Boolean,
+      required: true,
+      default: false,
+      hide:true
+   },
+   age: {
+      type: Number,
+      required: true
+   },
+   gender: {
+      type: String,
+      required: false
+   },
+   birthday: {
+      type: Date,
+      required: true
    }
 })
 
@@ -174,6 +192,10 @@ type user {
    isCompanyAppAdmin:Boolean!
    hiredDate:String!
    active:Boolean
+   isSuperUser:Boolean!
+   age:Int!
+   gender:String!
+   birthday:String!
 }
 
 `
@@ -209,9 +231,13 @@ addNewUser(
    idcompanyJobRole:ID!
    companyJobRoleDescription:String!
    userProfileImage:String!
-   isCompanyAppAdmin:Boolean!    
+   isCompanyAppAdmin:Boolean!
    hiredDate:String!
-   active:Boolean     
+   active:Boolean
+   isSuperUser:Boolean!
+   age:Int!
+   gender:String!
+   birthday:String!
 ): user
 editUser(
    idUser:ID!
@@ -237,6 +263,10 @@ editUser(
    isCompanyAppAdmin:Boolean
    hiredDate:String
    active:Boolean
+   isSuperUser:Boolean
+   age:Int
+   gender:String
+   birthday:String
 ): user
 
 `
@@ -249,6 +279,7 @@ export const allUsersFromCompany = async (root, args) => {
    return await user.find({ companyName: args.companyName })   //returns all users from the specified company   
 }
 
+//falta el resolver de "me" que está en el archivo "resolvers.js"
 
 //resolvers (mutation)
 export const addNewUser = async (root, args, context) => {
@@ -309,6 +340,11 @@ export const editUser = async (root, args, { currentUser }) => {
    if (args.isCompanyAppAdmin) urs.isCompanyAppAdmin = args.isCompanyAppAdmin
    if (args.hiredDate) urs.hiredDate = args.hiredDate
    if (args.active) urs.active = args.active
+   if (args.isSuperUser) urs.isSuperUser = args.isSuperUser
+   if (args.age) urs.age = args.age
+   if (args.gender) urs.gender = args.gender
+   if (args.birthday) urs.birthday = args.birthday
+
 
    try {
       await urs.save()

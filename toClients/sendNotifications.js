@@ -6,7 +6,13 @@ let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
 
 // Create the messages that you want to send to clients
 let messages = [];
-const somePushTokens=['ExponentPushToken[iWeCs9KM7OKomnkbaz80PK]','ExponentPushToken[wd7tJWH2jg0-mR8G_jknDG]']
+const somePushTokens=['ExponentPushToken[iWeCs9KM7OKomnkbaz80PK]','ExponentPushToken[-QX5f4ByZT1qKVXhH-IRlS]']
+
+// somePushTokens deberá ser una función que se autoejecute cada cierta cantidad de tiempo... 1 min por ejemplo
+// y verifique que ese usuario no tenga nuevas notificaciones
+// o todo esto desde "let expo" hasta "messages.push" ser una función a la que se la llame con somePushTokens 
+// como argumento
+//const somePushTokens=[]
 for (let pushToken of somePushTokens) {
   // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
 
@@ -40,14 +46,14 @@ let tickets = [];
   for (let chunk of chunks) {
     try {
       let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-      console.log(ticketChunk);
+      console.log('a= \n', ticketChunk);
       tickets.push(...ticketChunk);
       // NOTE: If a ticket contains an error code in ticket.details.error, you
       // must handle it appropriately. The error codes are listed in the Expo
       // documentation:
       // https://docs.expo.io/push-notifications/sending-notifications/#individual-errors
     } catch (error) {
-      console.error(error);
+      console.error('error a \n', error);
     }
   }
 })();
@@ -83,7 +89,7 @@ let receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
   for (let chunk of receiptIdChunks) {
     try {
       let receipts = await expo.getPushNotificationReceiptsAsync(chunk);
-      console.log(receipts);
+      console.log('b= \n', receipts);
 
       // The receipts specify whether Apple or Google successfully received the
       // notification and information about an error, if one occurred.
@@ -97,16 +103,14 @@ let receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
           );
           if (details && details.error) {
             // The error codes are listed in the Expo documentation:
-          
-
-  // https://docs.expo.io/push-notifications/sending-notifications/#individual-errors
+            // https://docs.expo.io/push-notifications/sending-notifications/#individual-errors
             // You must handle the errors appropriately.
             console.error(`The error code is ${details.error}`);
           }
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error('error b\n', error);
     }
   }
 })();

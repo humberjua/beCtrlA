@@ -12,6 +12,7 @@ import { gqlEC, gqlQEC, gqlMEC } from '../models/eventConsequence.js'
 import { gqlEM, gqlQEM, gqlMEM } from '../models/eventMatrix.js'  
 import { gqlST, gqlQST, gqlMST } from '../models/standardTicket.js'  
 import { gqlT, gqlQT, gqlMT } from '../models/ticket.js'  
+import { gqlUD, gqlQUD, gqlMUD } from '../models/userDevices.js'
 import { gqlChart, gqlQChart, gqlMChart } from '../models/chart.js'  
 import { gqlUserChart, gqlQUserChart, gqlMUserChart } from '../models/userChart.js'  
 import { gqlChat, gqlQChat, gqlMChat } from '../models/chat.js'  
@@ -34,23 +35,28 @@ const typeDefs = gql`
    }
    ${gqlCD} ${gqlCBU} ${gqlSS} ${gqlCS} ${gqlSJR} ${gqlCJR} ${gqlUser} ${gqlUC} ${gqlRQ} ${gqlEP} ${gqlEC}
    ${gqlEM} ${gqlST} ${gqlT} ${gqlChart} ${gqlUserChart} ${gqlChat} ${gqlNotification} ${gqlRSFC} ${gqlEA}
-   ${gqlS3}
+   ${gqlS3} ${gqlUD}
 
    type Query {
       ${gqlQCD} ${gqlQCBU} ${gqlQSS} ${gqlQCS} ${gqlQSJR} ${gqlQCJR} ${gqlQUser} ${gqlQUC} ${gqlQRQ} ${gqlQEP}
       ${gqlQEC} ${gqlQEM} ${gqlQST} ${gqlQT} ${gqlQChart} ${gqlQUserChart} ${gqlQChat} ${gqlQNotification} 
-      ${gqlQS3}
+      ${gqlQS3} ${gqlQUD}
    }
 
    type Mutation {
       ${gqlMCD} ${gqlMCBU} ${gqlMCJR} ${gqlMSS} ${gqlMCS} ${gqlMSJR} ${gqlMUser} ${gqlMUC} ${gqlMRQ} ${gqlMEP} 
       ${gqlMEC} ${gqlMEM} ${gqlMST} ${gqlMT} ${gqlMChart} ${gqlMUserChart} ${gqlMChat} ${gqlMNotification} 
-      ${gqlMS3}
+      ${gqlMS3} ${gqlMUD}
 
       login(
          userName:String!
          password:String!
+         userPlatform:String!
+         tokenDevice:String
       ): Token
    }
 `
+// En el caso del login se piden 4 argumentos, de los cuales el usuario solamente escribe 2 
+// (userName y password), los otros 2 los genera el sistema por el cual se esté logeando
+
 export default typeDefs

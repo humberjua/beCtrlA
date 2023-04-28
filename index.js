@@ -16,11 +16,7 @@ import { ApolloLogPlugin } from 'apollo-log'
 //import { graphql } from "graphql"
 //import { graphqlUploadExpress }  from 'graphql-upload'
 
-import { print } from 'graphql'
-
-/*
-Lo ultimo (13/04), llamado a notificaciones
-*/
+// import { print } from 'graphql'
 
 import './toClients/sendNotifications.js'
 

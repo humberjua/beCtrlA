@@ -114,12 +114,12 @@ const schema = new mongoose.Schema({
       required: true,
       minLength: 5,    
    },
-   isActive: {
-      type: Boolean,
-      required: true      
+   token: {
+      type: String,
+      required: true
    }
 })
-
+// token is unique for each device and is received on the BE side, each time users login
 schema.plugin(uniqueValidator)
 
 export const notification = mongoose.model('notification', schema) 
@@ -149,7 +149,7 @@ type notification {
    notificationLevel:Int!
    notificationTitle:String!
    notificationDescription:String!
-   isActive:Boolean!
+   token:String!
 }
 
 `
@@ -158,6 +158,7 @@ type notification {
 export const gqlQNotification = `
 notificationByIdUser(idUser:ID!):[notification]!
 notificationsToLevel(idUser:ID!,showNotificationsToLevel:Int!):[notification]!
+notificationsCountFromUser(idUser:ID!):Int!
 
 `
 
@@ -185,32 +186,13 @@ addNewNotification(
    notificationLevel:Int!
    notificationTitle:String!
    notificationDescription:String!
-   isActive:Boolean!
+   token:String!
 ): notification
 editNotification(
    idNotification:ID!
-   idUser:ID
-   idEmployee:ID
-   firstName:String
-   secondName:String
-   lastName:String
-   secondLastName:String
-   nickName:String
-   email:String
-   phone:String
-   companyName:String
-   idCompanyBusinessUnit:ID
-   companyBusinessUnitDescription:String
-   idCompanySector:ID
-   companySectorDescription:String
-   idcompanyJobRole:ID
-   companyJobRoleDescription:String
-   showNotificationsToLevel:Int
-   dateStamp:String
    notificationLevel:Int
    notificationTitle:String
    notificationDescription:String
-   isActive:Boolean
 ): notification
 
 `
@@ -226,7 +208,9 @@ export const notificationsToLevel = async (root, args) => {
    return await notification.find({ idUser: args.idUser, showNotificationsToLevel: `<=${showNotificationsToLevel}` })
    //should returns the total user's notification from the riskest level (1), to the specified level
 }
-
+export const notificationsCountFromUser = async (root,args) => {
+   return await notification.find({idUser: args.idUser}).countDocuments()
+}
 
 //resolvers (mutation)
 export const addNewNotification = async (root, args) => {
@@ -245,28 +229,9 @@ export const editNotification = async (root, args) => {
    const notif = await notification.findOne({ idNotification: args.idNotification })
    if (!notif) return
 
-   if (args.idUser) notif.idUser = args.idUser
-   if (args.idEmployee) notif.idEmployee = args.idEmployee
-   if (args.firstName) notif.firstName = args.firstName
-   if (args.secondName) notif.secondName = args.secondName
-   if (args.lastName) notif.lastName = args.lastName
-   if (args.secondLastName) notif.secondLastName = args.secondLastName
-   if (args.nickName) notif.nickName = args.nickName
-   if (args.email) notif.email = args.email
-   if (args.phone) notif.phone = args.phone
-   if (args.companyName) notif.companyName = args.companyName
-   if (args.idCompanyBusinessUnit) notif.idCompanyBusinessUnit = args.idCompanyBusinessUnit
-   if (args.companyBusinessUnitDescription) notif.companyBusinessUnitDescription = args.companyBusinessUnitDescription
-   if (args.idCompanySector) notif.idCompanySector = args.idCompanySector
-   if (args.companySectorDescription) notif.companySectorDescription = args.companySectorDescription
-   if (args.idcompanyJobRole) notif.idcompanyJobRole = args.idcompanyJobRole
-   if (args.companyJobRoleDescription) notif.companyJobRoleDescription = args.companyJobRoleDescription
-   if (args.showNotificationsToLevel) notif.showNotificationsToLevel = args.showNotificationsToLevel
-   if (args.dateStamp) notif.dateStamp = args.dateStamp
    if (args.notificationLevel) notif.notificationLevel = args.notificationLevel
    if (args.notificationTitle) notif.notificationTitle = args.notificationTitle
    if (args.notificationDescription) notif.notificationDescription = args.notificationDescription
-   if (args.isActive) notif.isActive = args.isActive
 
    try {
       await notif.save()
