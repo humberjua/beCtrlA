@@ -18,7 +18,7 @@ import { ApolloLogPlugin } from 'apollo-log'
 
 // import { print } from 'graphql'
 
-import './toClients/sendNotifications.js'
+// import './toClients/sendNotifications.js'
 
 dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET
