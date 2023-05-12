@@ -6,8 +6,8 @@ let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
 
 // Create the messages that you want to send to clients
 let messages = [];
-// const somePushTokens=['ExponentPushToken[iWeCs9KM7OKomnkbaz80PK]','ExponentPushToken[vLSh-UCFs7yWMtM2jurSLl]']
-const somePushTokens=[]
+const somePushTokens=['ExponentPushToken[iWeCs9KM7OKomnkbaz80PK]','ExponentPushToken[vLSh-UCFs7yWMtM2jurSLl]', 'ExponentPushToken[DtyD9kGHwsIFfwZdy033Qb]']
+// const somePushTokens=[]
 
 // somePushTokens deberá ser una función que se autoejecute cada cierta cantidad de tiempo... 1 min por ejemplo
 // y verifique que ese usuario no tenga nuevas notificaciones
@@ -26,9 +26,9 @@ for (let pushToken of somePushTokens) {
   messages.push({
     to: pushToken,
     sound: 'default',
-    body: 'Para Francó, que lo mira por WS',
+    body: 'notificación de prueba',
     data: { withSome: 'data' },
-    title: 'From BE, with App close and phone in airplane mode'
+    title: 'TEST NOTIFICATION'
   })
 }
 

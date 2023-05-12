@@ -44,7 +44,11 @@ allDevicesFromUser(idUser:ID!):[userDevices]!
 
 //definitions (mutations)
 export const gqlMUD = `
-addNewDeviceToUser: userDevices
+addNewDeviceToUser(
+  idUserDevice:ID!
+  idUser:ID!
+  token:String!
+): userDevices
 
 `
 

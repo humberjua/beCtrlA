@@ -18,6 +18,9 @@ import { ApolloLogPlugin } from 'apollo-log'
 
 // import { print } from 'graphql'
 
+/*
+   Importante activar cuando se quiera enviar notificaciones
+*/
 // import './toClients/sendNotifications.js'
 
 dotenv.config()

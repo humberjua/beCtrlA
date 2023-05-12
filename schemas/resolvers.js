@@ -141,7 +141,9 @@ const resolvers = {
       // user 
       allUsers,                        //returns the users list loaded in Ctrl+A from all companies
       allUsersFromCompany,             //returns all the users from the specified company
-      me: (root, args, context) => {return context.currentUser},
+      me: (root, args, context) => {
+         return (context.currentUser)
+      },
       
       // userConfiguration 
       userConfigurationFromCompany,    //returns all the users configurations from the specified company
@@ -284,17 +286,16 @@ const resolvers = {
       addNewDeviceToUser,
 
       // login
-      login: async (root, args) => {
-         
+      login: async (root, args) => {         
          //se logueará por usuario (nickName) que es único. Al nuevo usuario lo creará el "adminApp" o el "adminDev"
 
          const usr = await user.findOne({ nickName: args.userName })
          
-         if (!usr) throw new UserInputError('Wrong credentials')               
+         if (!usr) throw new UserInputError('Wrong credentials')
 
          const match = await bcrypt.compare(args.password, usr.password);
          if (!match) {
-            throw new UserInputError('Wrong credentials')               
+            throw new UserInputError('Wrong credentials')       
          }
          // En este punto hay que intentar crear el nuevo userDevice
          // addNewDeviceToUser(root, args)   //en realidad, esto se debe llamar desde el FE, pasando el token del dispositivo con el que se logueó (expo token)
@@ -302,8 +303,9 @@ const resolvers = {
             username: usr.nickName,
             id: usr._id
          }
+         const value = jwt.sign(userForToken,JWT_SECRET)
          return {
-            value: jwt.sign(userForToken,JWT_SECRET)
+            value
          }
       },
       //En esta parte hay que analizar si conviene poner un logout o si eso lo hacemos desde el cliente
