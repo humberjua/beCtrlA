@@ -112,7 +112,6 @@ findCompany(companyName: String! ): companyData
 //definitions (mutation)
 export const gqlMCD = `
    addNewCompany(
-      idCompany: ID!         
       companyName: String!
       companyCategory:String!
       headQuartersCountry:String!

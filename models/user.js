@@ -163,6 +163,8 @@ schema.set('toJSON', {
 
 export const user = mongoose.model('user', schema) 
 
+const saltRounds = 10         //constant used by bcrypt in order to enlarged or simplify the encryption method
+//bigger values will be more secure but it will take more process time, a common good value is 10
 
 //definitions (type)
 export const gqlUser = `
@@ -290,8 +292,6 @@ export const addNewUser = async (root, args, context) => {
 
    // crypting password into mongo
 
-   const saltRounds = 10         //constant used by bcrypt in order to enlarged or simplify the encryption method
-                                 //bigger values will be more secure but it will take more process time, a common good value is 10
    const passwordHash = await bcrypt.hash(args.password, saltRounds)
    
    const nU = new user({ ...args, idUser: uuid(), password: passwordHash })
@@ -318,7 +318,10 @@ export const editUser = async (root, args, { currentUser }) => {
       
 
    if (args.idEmployee) urs.idEmployee = args.idEmployee
-   if (args.password) urs.password = args.password
+   if (args.password) {
+      const passwordHash = await bcrypt.hash(args.password, saltRounds)
+      urs.password = passwordHash
+   }
    if (args.firstName) urs.firstName = args.firstName
    if (args.secondName) urs.secondName = args.secondName
    if (args.lastName) urs.lastName = args.lastName
