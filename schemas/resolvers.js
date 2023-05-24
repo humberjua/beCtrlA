@@ -89,6 +89,10 @@ import {
 import { riskStatsFromCompany, gqlRSFC } from '../models/riskStatsFromCompany.js'  
 import { employeeActivity, gqlEA } from '../models/employeeActivity.js'  
 import { userDevices, allDevicesFromUser, addNewDeviceToUser } from '../models/userDevices.js'
+import { 
+   companyContract, contractsCount, allContracts, findContract,
+   addNewCompanyContract, editCompanyContract 
+} from '../models/companyContract.js'
 
 import '../config/s3.js'    //debería abrir la conexión con el servicio aws s3
 
@@ -202,6 +206,11 @@ const resolvers = {
 
       // userDevices
       allDevicesFromUser,
+
+      // companyContract
+      contractsCount,
+      allContracts,
+      findContract
       // Está faltando agregar las querys propias de las estadísticas (employeeActivity, riskStatsFromCompany),
       // esto tambièn implica agregarlas en la string function gql
 
@@ -308,6 +317,10 @@ const resolvers = {
             value
          }
       },
+
+      // companyContract
+      addNewCompanyContract,
+      editCompanyContract,
       //En esta parte hay que analizar si conviene poner un logout o si eso lo hacemos desde el cliente
 
       

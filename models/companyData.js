@@ -14,6 +14,7 @@ const schema = new mongoose.Schema({
    companyName: {
       type: String,
       required: true,
+      unique: true,
       minLength:3      
    },
    companyCategory: {
@@ -24,7 +25,7 @@ const schema = new mongoose.Schema({
    headQuartersCountry: {
       type: String,
       required: true,
-      minLength:5      
+      minLength:4    
    },
    headQuartersCity: {
       type: String,
@@ -154,7 +155,7 @@ export const findCompany = async (root, args) => {
 //resolvers (mutation)
 export const addNewCompany = async (root, args, { currentUser }) => {         
    if (!currentUser) throw new AuthenticationError('Authentication failed...')
-   
+   // ojo que tal vez de error si no se verifica que el nombre de la empresa sea único
    const newCompany = new companyData({ ...args, idCompany: uuid() })
 
    try {
@@ -195,4 +196,4 @@ export const editCompanyData = async (root, args, {currentUser}) => {
    }
    return company
 }
-// edits the companyData with only those parameters indicated
+// edits the companyContract with only those parameters indicated

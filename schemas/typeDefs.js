@@ -20,6 +20,7 @@ import { gqlNotification, gqlQNotification, gqlMNotification } from '../models/n
 import { riskStatsFromCompany, gqlRSFC } from '../models/riskStatsFromCompany.js'  
 import { employeeActivity, gqlEA } from '../models/employeeActivity.js'  
 import { gqlS3, gqlQS3, gqlMS3 } from '../models/gqlS3.js'
+import { gqlCC, gqlQCC, gqlMCC } from '../models/companyContract.js'
 import {  gql } from "apollo-server"
 
 
@@ -35,18 +36,18 @@ const typeDefs = gql`
    }
    ${gqlCD} ${gqlCBU} ${gqlSS} ${gqlCS} ${gqlSJR} ${gqlCJR} ${gqlUser} ${gqlUC} ${gqlRQ} ${gqlEP} ${gqlEC}
    ${gqlEM} ${gqlST} ${gqlT} ${gqlChart} ${gqlUserChart} ${gqlChat} ${gqlNotification} ${gqlRSFC} ${gqlEA}
-   ${gqlS3} ${gqlUD}
+   ${gqlS3} ${gqlUD} ${gqlCC}
 
    type Query {
       ${gqlQCD} ${gqlQCBU} ${gqlQSS} ${gqlQCS} ${gqlQSJR} ${gqlQCJR} ${gqlQUser} ${gqlQUC} ${gqlQRQ} ${gqlQEP}
       ${gqlQEC} ${gqlQEM} ${gqlQST} ${gqlQT} ${gqlQChart} ${gqlQUserChart} ${gqlQChat} ${gqlQNotification} 
-      ${gqlQS3} ${gqlQUD}
+      ${gqlQS3} ${gqlQUD} ${gqlQCC}
    }
 
    type Mutation {
       ${gqlMCD} ${gqlMCBU} ${gqlMCJR} ${gqlMSS} ${gqlMCS} ${gqlMSJR} ${gqlMUser} ${gqlMUC} ${gqlMRQ} ${gqlMEP} 
       ${gqlMEC} ${gqlMEM} ${gqlMST} ${gqlMT} ${gqlMChart} ${gqlMUserChart} ${gqlMChat} ${gqlMNotification} 
-      ${gqlMS3} ${gqlMUD}
+      ${gqlMS3} ${gqlMUD} ${gqlMCC}
 
       login(
          userName:String!
