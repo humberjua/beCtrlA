@@ -77,6 +77,7 @@ findContract(companyName: String!): companyContract
 //definitions (mutations)
 export const gqlMCC =`
 addNewCompanyContract(
+  idCompany: ID! 
   companyName: String!
   hasCAAdmin: Boolean!
   amountOfCAA: Int!
@@ -107,7 +108,7 @@ export const findContract = async (root, args) => {
 
 // resolvers (mutations)
 export const addNewCompanyContract = async (root, args, { currentUser }) => {         
-  if (!currentUser) throw new AuthenticationError('Authentication failed...')
+   if (!currentUser) throw new AuthenticationError('Authentication failed...')
   // ojo que tal vez de error si no se verifica que el nombre de la empresa sea único
   const newCompanyContract = new companyContract({ ...args, idContract: uuid() })
 

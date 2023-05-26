@@ -33,12 +33,13 @@ const plugins = [ApolloLogPlugin({})];
 const server = new ApolloServer({
    typeDefs,
    resolvers,
-   // plugins,
+   //plugins,
    // uploads:false,
    context: async ({ req }) => {
       const auth = req ? req.headers.authorization : null      
-      // jwt.expiresIn = '10'
+      jwt.expiresIn = '1d'
       if (auth && auth.toLowerCase().startsWith("bearer ")) {         
+         // console.info('desde dentro del apollo client\n', auth)
          const token = auth.substring(7).toString()
                   
          const {id} = jwt.verify(token, JWT_SECRET)

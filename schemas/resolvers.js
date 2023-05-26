@@ -312,7 +312,9 @@ const resolvers = {
             username: usr.nickName,
             id: usr._id
          }
-         const value = jwt.sign(userForToken,JWT_SECRET)
+         
+         const value = jwt.sign(userForToken, JWT_SECRET)
+         console.info('token desde login server= \n', value)
          return {
             value
          }
