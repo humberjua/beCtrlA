@@ -205,7 +205,9 @@ type user {
 //definitions (query)
 export const gqlQUser = `
 allUsers: Int!
-allUsersFromCompany(companyName:String!): [user]!
+totalUsersFromCompany(companyName:String!, isCompanyAppAdmin:Boolean): Int!
+allUsersFromCompany(companyName:String!, isCompanyAppAdmin: Boolean): [user]!
+findUser(nickName:String!): [user]
 me:user
 
 `
@@ -275,19 +277,35 @@ editUser(
 
 
 //resolvers (query)
-export const allUsers = () => user.collection.countDocuments()  //returns the user list loaded in Ctrl+A from all companies
+export const allUsers = async () => await user.collection.countDocuments()  //returns the user list loaded in Ctrl+A from all companies
 
 export const allUsersFromCompany = async (root, args) => {
-   return await user.find({ companyName: args.companyName })   //returns all users from the specified company   
+   const params = args.isCompanyAppAdmin === undefined
+      ? { companyName: args.companyName }
+      : { companyName: args.companyName, isCompanyAppAdmin: args.isCompanyAppAdmin }      
+   console.info(params)
+   return await user.find( params )   //returns all users from the specified company   
 }
 
+export const totalUsersFromCompany = async (root, args) => {
+   const params = args.isCompanyAppAdmin === undefined
+      ? { companyName: args.companyName }
+      : { companyName: args.companyName, isCompanyAppAdmin: args.isCompanyAppAdmin }      
+   return await user.find(params).countDocuments()
+}
+
+export const findUser = async (root, args, context) => {
+   const { currentUser } = context
+   if (!currentUser) throw new AuthenticationError('Authentication failed...')   
+   return await user.find({ nickName: args.nickName })
+}
 //falta el resolver de "me" que está en el archivo "resolvers.js"
 
 //resolvers (mutation)
 export const addNewUser = async (root, args, context) => {
    
-   // const { currentUser } = context
-   // if (!currentUser) throw new AuthenticationError('Authentication failed...')
+   const { currentUser } = context
+   if (!currentUser) throw new AuthenticationError('Authentication failed...')
    //this authentication must be used in all those queries and mutations that we consider as sensitive on security.
 
    // crypting password into mongo

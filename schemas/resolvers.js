@@ -29,7 +29,7 @@ import {
 } from '../models/companyJobRole.js'  
 
 import {
-   user, allUsers, allUsersFromCompany,
+   user, allUsers, allUsersFromCompany, totalUsersFromCompany, findUser,
    addNewUser, editUser
 } from '../models/user.js'  
 
@@ -78,7 +78,7 @@ import {
 } from '../models/userChart.js'  
 
 import {
-   chat, chatByIdUser,
+   chat, chatByIdUser, totalChatsByIdUser,
    chatBy2Users, chatByConversation, addNewChat, editChat
 } from '../models/chat.js'  
 
@@ -145,6 +145,8 @@ const resolvers = {
       // user 
       allUsers,                        //returns the users list loaded in Ctrl+A from all companies
       allUsersFromCompany,             //returns all the users from the specified company
+      totalUsersFromCompany,           //returns the amount of users of the specified company
+      findUser,                        //returns the user with the specified nickName
       me: (root, args, context) => {
          return (context.currentUser)
       },
@@ -198,6 +200,7 @@ const resolvers = {
       chatBy2Users,                    //returns all the chat between 2 users. Admin dev
       chatByConversation,              //returns the chat by idConversation, one idConversation can include lots of idUser 
                                        //and  allows the "add User" button functionality
+      totalChatsByIdUser,
 
       // notification 
       notificationByIdUser,            //returns the total user's notification list
@@ -314,7 +317,7 @@ const resolvers = {
          }
          
          const value = jwt.sign(userForToken, JWT_SECRET)
-         console.info('token desde login server= \n', value)
+         // console.info('token desde login server= \n', value)
          return {
             value
          }

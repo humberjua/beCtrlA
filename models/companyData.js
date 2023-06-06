@@ -169,6 +169,11 @@ export const addNewCompany = async (root, args, { currentUser }) => {
    //adds a new company in the companyData collection
 }
 export const editCompanyData = async (root, args, {currentUser}) => {
+   console.info('currentUser= ', currentUser)
+   console.info('args= \n', args)
+   console.info('root= \n', root)
+   console.info(currentUser)
+
    if (!currentUser) throw new AuthenticationError('Authentication failed...')
 
    const company = await companyData.findOne({ idCompany: args.idCompany })

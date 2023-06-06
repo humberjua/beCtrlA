@@ -24,7 +24,7 @@
     "jsonwebtoken": "8.5.1",
     "mongoose": "6.6.5",
     "mongoose-unique-validator": "3.1.0",
-    "nodemon": "2.0.20",
+    "nodemon": "^2.0.20",
     "uuid": "9.0.0"
   },
   "devDependencies": {
@@ -35,15 +35,8 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "6.1.0",
-    "eslint-plugin-react": "7.31.10"
+    "eslint-plugin-react": "7.31.10",
+    "standard": "^17.0.0"
   },
-  "private": true,
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "standard",
-      "standard-jsx",
-      "standard-react"
-    ]
-  }
+  "private": true
 }

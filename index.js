@@ -33,18 +33,21 @@ const plugins = [ApolloLogPlugin({})];
 const server = new ApolloServer({
    typeDefs,
    resolvers,
-   //plugins,
+   // plugins,
    // uploads:false,
    context: async ({ req }) => {
       const auth = req ? req.headers.authorization : null      
-      jwt.expiresIn = '1d'
-      if (auth && auth.toLowerCase().startsWith("bearer ")) {         
-         // console.info('desde dentro del apollo client\n', auth)
+      if (auth && auth.toLowerCase().startsWith("bearer ")) {     
+         
+         // jwt.expiresIn = '1d'
+         
+         console.info('desde dentro del apollo server\n', auth)
          const token = auth.substring(7).toString()
-                  
+         
          const {id} = jwt.verify(token, JWT_SECRET)
          const currentUser = await user.findById(id).exec()
          
+         console.log('currentUser=\n', currentUser)
          return {currentUser}
       }
    }   

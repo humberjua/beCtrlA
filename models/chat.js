@@ -161,6 +161,7 @@ export const gqlQChat = `
 chatByIdUser(idUser:ID!):[chat]!
 chatBy2Users(idUser:ID!,idUserTo:ID!):[chat]!
 chatByConversation(idConversation:ID!):[chat]!
+totalChatsByIdUser(idUser: ID!): Int!
 
 `
 
@@ -225,7 +226,8 @@ export const chatByIdUser = async (root, args) => {
    //tipo de consulta solo válida para fines administrativos...         
 }
 export const chatBy2Users = async (root, args) => {   
-   return await chat.filter({ idUser: args.idUser, idUserTo: args.idUserTo })
+   return await chat.find({ idUser: args.idUser, idUserTo: args.idUserTo }) //.sort({ chatDateTimePost })
+   // antes decía .filter
    //returns all the chat between 2 users
    //tipo de consulta solo válida para fines administrativos...
 }
@@ -236,6 +238,9 @@ export const chatByConversation= async (root, args) => {
    //y por lo tanto las mismas se podràn consultar de esa forma
 }
 
+export const totalChatsByIdUser = async (root, args) => {
+   return await chat.find({ idUser: args.idUser }).countDocuments()
+}
 
 //resolvers (mutation)
 export const addNewChat = async (root, args) => {
