@@ -44,6 +44,8 @@ type eventConsequence {
 //definitions (query)
 export const gqlQEC = `
 allEventConsequences:[eventConsequence]!
+findEventConsequence(idEventConsequence:String!):eventConsequence
+
 `
 
 //definitions (mutation)
@@ -65,6 +67,14 @@ editEventConsequence(
 //resolvers (query)
 export const allEventConsequences = async () => await eventConsequence.find({})
 //returns the eventConsequence collection complete
+
+export const findEventConsequence = async (root, args, context) => {
+   const { currentUser } = context
+   if (!currentUser) throw new AuthenticationError('Authentication failed...')   
+   const result = await eventConsequence.findOne({ idEventConsequence: args.idEventConsequence })
+   return result
+}
+
 
 
 //resolvers (mutation)

@@ -19,7 +19,7 @@ import {
 } from '../models/companySector.js'  
 
 import {
-   standardJobRole, allStandardJobRoles,
+   standardJobRole, allStandardJobRoles, findStandardJobRole,
    addNewStandardJobRole, editStandardJobRoleDescription
 } from '../models/standardJobRole.js'  
 
@@ -44,12 +44,12 @@ import {
 } from '../models/riskQualification.js'  
 
 import {
-   eventProbability, allEventProbabilities,
+   eventProbability, allEventProbabilities, findEventProbability,
    addNewEventProbability, editEventProbability
 } from '../models/eventProbability.js'  
 
 import {
-   eventConsequence, allEventConsequences,
+   eventConsequence, allEventConsequences, findEventConsequence,
    addNewEventConsequence, editEventConsequence
 } from '../models/eventConsequence.js'  
 
@@ -138,6 +138,7 @@ const resolvers = {
       
       // standardJobRole 
       allStandardJobRoles,             //returns all standard job roles loaded into CTRL+A mongoDB
+      findStandardJobRole,             //returns the standard job role searched by the idStandardJobRole
       
       // companyJobRole 
       allCompanyJobRoles,              // returns all the job roles from the company you are looking for
@@ -160,9 +161,11 @@ const resolvers = {
       
       // eventProbability 
       allEventProbabilities,           //returns the eventProbabilitie collection complete
+      findEventProbability,            // returns the EventProbability with the specified Id
       
       // eventConsequence 
       allEventConsequences,            //returns the eventConsequence collection complete
+      findEventConsequence,            //returns the EventConsequence with the specified Id
       
       // eventMatrix 
       allEventMatrixValues,            //returns the eventMatrix complete collection

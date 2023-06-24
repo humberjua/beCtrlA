@@ -1,7 +1,7 @@
 import mongoose, { syncIndexes } from "mongoose"
 import uniqueValidator from "mongoose-unique-validator"
 import { v1 as uuid } from 'uuid'
-import { UserInputError } from "apollo-server"
+import { AuthenticationError, UserInputError } from "apollo-server"
 
 const schema = new mongoose.Schema({
    idStandardJobRole: {
@@ -44,6 +44,8 @@ type standardJobRole{
 //type definitions (Query)
 export const gqlQSJR = `
 allStandardJobRoles: [standardJobRole]!
+findStandardJobRole(idStandardJobRole:String!): standardJobRole
+
 `
 
 //type definitions (Mutation)
@@ -64,6 +66,15 @@ editStandardJobRoleDescription(
 export const allStandardJobRoles = async () => {
    return await standardJobRole.find({})
    //returns all standard job roles loaded in the CTRL+A mongoDB
+}
+
+export const findStandardJobRole = async (root, args, context) => {
+   const { currentUser } = context
+   if (!currentUser) throw new AuthenticationError('Authentication failed...')
+   console.info('args', args)
+   const result = await standardJobRole.findOne({ idStandardJobRole: args.idStandardJobRole })
+   console.info('result\n', result)
+   return result
 }
 
 //resolvers, mutations

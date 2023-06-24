@@ -45,6 +45,7 @@ type eventProbability {
 //definitions (query)
 export const gqlQEP = `
 allEventProbabilities:[eventProbability]!
+findEventProbability(idEventProbability:ID!):eventProbability
 
 `
 
@@ -68,7 +69,12 @@ editEventProbability(
 export const allEventProbabilities = async () => await eventProbability.find({})
 //returns the eventProbabilitie collection complete
 
-
+export const findEventProbability = async (root, args, context) => {
+   const { currentUser } = context
+   if (!currentUser) throw new AuthenticationError('Authentication failed...')   
+   const result = await eventProbability.findOne({ idEventProbability: args.idEventProbability })
+   return result
+}
 
 //resolvers (mutation)
 export const addNewEventProbability = async (root, args) => {

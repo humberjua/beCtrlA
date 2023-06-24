@@ -207,7 +207,7 @@ export const gqlQUser = `
 allUsers: Int!
 totalUsersFromCompany(companyName:String!, isCompanyAppAdmin:Boolean): Int!
 allUsersFromCompany(companyName:String!, isCompanyAppAdmin: Boolean): [user]!
-findUser(nickName:String!): [user]
+findUser(nickName:String!): user
 me:user
 
 `
@@ -297,7 +297,10 @@ export const totalUsersFromCompany = async (root, args) => {
 export const findUser = async (root, args, context) => {
    const { currentUser } = context
    if (!currentUser) throw new AuthenticationError('Authentication failed...')   
-   return await user.find({ nickName: args.nickName })
+   console.info('args', args)
+   const result = await user.findOne({ nickName: args.nickName })
+   console.info('result\n', result)
+   return result
 }
 //falta el resolver de "me" que está en el archivo "resolvers.js"
 
