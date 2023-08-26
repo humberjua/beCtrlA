@@ -156,6 +156,7 @@ export const findCompany = async (root, args) => {
 export const addNewCompany = async (root, args, { currentUser }) => {         
    if (!currentUser) throw new AuthenticationError('Authentication failed...')
    // ojo que tal vez de error si no se verifica que el nombre de la empresa sea único
+   console.log('args\n', args)
    const newCompany = new companyData({ ...args, idCompany: uuid() })
 
    try {

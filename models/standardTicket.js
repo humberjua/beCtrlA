@@ -110,6 +110,7 @@ type standardTicket {
 export const gqlQST = `
 allStandardTickets:[standardTicket]!
 standardTicketsCount:Int!
+findStandardTicket(idStandardTicket:ID!): standardTicket
 
 `
 
@@ -160,6 +161,12 @@ export const allStandardTickets = async (root,args) => {
    //returns the standardTicket collection complete
 }
 
+export const findStandardTicket = async (root,args, {currentUser}) =>{
+   if (!currentUser) throw new AuthenticationError('Authentication failed...')
+
+   return await standardTicket.findOne({idStandardTicket: args.idStandardTicket})
+   
+}
 
 
 //resolvers (mutation)

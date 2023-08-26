@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 import uniqueValidator from "mongoose-unique-validator"
 import { v1 as uuid } from 'uuid'
-import { UserInputError } from "apollo-server"
+import { AuthenticationError, UserInputError } from "apollo-server"
 
 const schema = new mongoose.Schema({
    idChat: {
@@ -102,8 +102,7 @@ const schema = new mongoose.Schema({
    },
    userProfileImageTo: {
       type: String,
-      required: true,
-      minLength: 8,    
+      required: false,
    },
    chatText: {
       type: String,
@@ -116,8 +115,11 @@ const schema = new mongoose.Schema({
    },
    idConversation: {
       type: String,
-      required: true,
-      minLength:8
+      required: false,
+   },
+   messageRead: {
+      type: Boolean,
+      required: true
    }
 })
 
@@ -151,7 +153,8 @@ type chat {
    userProfileImageTo:String
    chatText:String
    chatDateTimePost:String
-   idConversation:ID!
+   idConversation:ID
+   messageRead:Boolean!
 }
 
 `
@@ -162,6 +165,8 @@ chatByIdUser(idUser:ID!):[chat]!
 chatBy2Users(idUser:ID!,idUserTo:ID!):[chat]!
 chatByConversation(idConversation:ID!):[chat]!
 totalChatsByIdUser(idUser: ID!): Int!
+totalUnReadChatsByIdUser(idUser: ID!): Int!
+lastMsgBy2Users(idUser:ID!,idUserTo:ID!): chat
 
 `
 
@@ -186,10 +191,11 @@ addNewChat(
    companyJobRoleDescription:String!
    idUserTo:ID!
    userProfileImage:String!
-   userProfileImageTo:String!
+   userProfileImageTo:String
    chatText:String!
    chatDateTimePost:String!
-   idConversation:ID!
+   idConversation:ID
+   messageRead:Boolean!
 ): chat
 editChat(
    idChat:ID!
@@ -215,6 +221,7 @@ editChat(
    chatText:String
    chatDateTimePost:String
    idConversation:ID
+   messageRead:Boolean
 ): chat
 
 `
@@ -226,20 +233,47 @@ export const chatByIdUser = async (root, args) => {
    //tipo de consulta solo válida para fines administrativos...         
 }
 export const chatBy2Users = async (root, args) => {   
-   return await chat.find({ idUser: args.idUser, idUserTo: args.idUserTo }) //.sort({ chatDateTimePost })
-   // antes decía .filter
-   //returns all the chat between 2 users
-   //tipo de consulta solo válida para fines administrativos...
+   return await chat.find({ $or: 
+      [{
+         idUser: args.idUser,
+         idUserTo: args.idUserTo
+      }, {
+         idUser: args.idUserTo,
+         idUserTo: args.idUser
+      }]
+   }).sort({ chatDateTimePost: 1 })   
+   // : 1   ==> means ascending
+   // : -1  ==> means descending
+   //returns all the chats between 2 users
 }
+
+export const lastMsgBy2Users = async (root, args) => {
+   const result = await chat.findOne({ $or: 
+      [{
+         idUser: args.idUser,
+         idUserTo: args.idUserTo
+      }, {
+         idUser: args.idUserTo,
+         idUserTo: args.idUser
+      }]
+   }).sort({ chatDateTimePost: -1 })
+   return result
+}
+
 export const chatByConversation= async (root, args) => {   
-   return await chat.find({ idConversation: args.idConversation})
+   return await chat.find({ idConversation: args.idConversation}).sort({ chatDateTimePost: -1 })
    //returns the chat by idConversation, one idConversation can include lots of idUser and allows the "add User" button
    //cada vez que se inicia un chat con una persona (chat que estaba vacío antes), se genera un nuevo idConversation
    //y por lo tanto las mismas se podràn consultar de esa forma
 }
 
 export const totalChatsByIdUser = async (root, args) => {
+   console.log(args)
    return await chat.find({ idUser: args.idUser }).countDocuments()
+}
+
+export const totalUnReadChatsByIdUser = async (root, args) => {
+   return await chat.find({ idUserTo: args.idUser, messageRead: false }).countDocuments()
 }
 
 //resolvers (mutation)
@@ -257,8 +291,10 @@ export const addNewChat = async (root, args) => {
    //adds one new record into the chat collection, this operation means one new idConversation. When some new user is added
    //to the conversation, it will have the same idConversation in order to showit later in the FE chat screen
 }
-export const editChat = async (root, args) => {
-   
+export const editChat = async (root, args, { currentUser }) => {
+   console.log('args\n', args)
+   if (!currentUser) throw new AuthenticationError('Authentication failed...')
+
    const cht = await chat.findOne({ idChat: args.idChat })
    if (!cht) return cht
 
@@ -284,6 +320,7 @@ export const editChat = async (root, args) => {
    if (args.chatText) cht.chatText = args.chatText
    if (args.chatDateTimePost) cht.chatDateTimePost = args.chatDateTimePost
    if (args.idConversation) cht.idConversation = args.idConversation
+   if (args.messageRead) cht.messageRead = args.messageRead
 
    try {
       await cht.save()

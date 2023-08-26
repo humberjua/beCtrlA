@@ -15,5 +15,5 @@ const s3 = new aws.S3({
     }   
   })
 
-  //console.log(s3)
+  console.log('s3\n', s3)
   export default s3

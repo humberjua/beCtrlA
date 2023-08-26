@@ -15,7 +15,7 @@ const schema = new mongoose.Schema({
    idEmployee: {
       type: String,
       required: true,
-      minLength:8      
+      minLength:5      
    },
    password: {
       type: String,

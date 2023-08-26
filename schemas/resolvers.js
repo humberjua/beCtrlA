@@ -59,7 +59,7 @@ import {
 } from '../models/eventMatrix.js'  
 
 import {
-   standardTicket, standardTicketsCount,
+   standardTicket, standardTicketsCount, findStandardTicket,
    allStandardTickets, addNewStandardTicket, editStandardTicket
 } from '../models/standardTicket.js'  
 
@@ -78,7 +78,7 @@ import {
 } from '../models/userChart.js'  
 
 import {
-   chat, chatByIdUser, totalChatsByIdUser,
+   chat, chatByIdUser, totalChatsByIdUser, totalUnReadChatsByIdUser, lastMsgBy2Users,
    chatBy2Users, chatByConversation, addNewChat, editChat
 } from '../models/chat.js'  
 
@@ -175,6 +175,7 @@ const resolvers = {
       // standardTicket 
       standardTicketsCount,            //returns the amount of standard tickets already loaded into Ctrl+A database
       allStandardTickets,              //returns the standardTicket collection complete
+      findStandardTicket,              //returns the standardTicket searched by its id
       
       // ticket, general queries, just for "admin dev" use.  
       allOpenTickets,
@@ -204,6 +205,8 @@ const resolvers = {
       chatByConversation,              //returns the chat by idConversation, one idConversation can include lots of idUser 
                                        //and  allows the "add User" button functionality
       totalChatsByIdUser,
+      totalUnReadChatsByIdUser,        // usefull to know how much chats unread this user have
+      lastMsgBy2Users,                 // returns just the last message in a 2 users conversation
 
       // notification 
       notificationByIdUser,            //returns the total user's notification list
