@@ -312,6 +312,7 @@ const resolvers = {
          if (!usr) throw new UserInputError('Wrong credentials')
 
          const match = await bcrypt.compare(args.password, usr.password);
+         
          if (!match) {
             throw new UserInputError('Wrong credentials')       
          }

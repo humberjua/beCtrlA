@@ -140,7 +140,23 @@ const schema = new mongoose.Schema({
       type: String,
       required: false,
       minLength: 3,    
-   }      
+   },   
+   personalPhone: {
+      type: String,
+      required: false
+   },
+   personalEmail: {
+      type: String,
+      required: false
+   },
+   personalAddress: {
+      type: String,
+      required: false   
+   },
+   aboutMe: {
+      type: String,
+      required: false
+   }
 })
 
 schema.plugin(uniqueValidator)
@@ -171,11 +187,16 @@ type userConfiguration {
    companySectorDescription:String!
    idcompanyJobRole:ID!
    companyJobRoleDescription:String!
+   userProfileImage:String!
    theme:String!
    showNotificationsToLevel:Int
    optionConfiguration1:String
    optionConfiguration2:String
    optionConfiguration3:String
+   personalPhone:String
+   personalEmail:String
+   personalAddress:String
+   aboutMe:String
 }
 
 `
@@ -216,6 +237,10 @@ addNewUserConfiguration(
    optionConfiguration1:String
    optionConfiguration2:String
    optionConfiguration3:String
+   personalPhone:String
+   personalEmail:String
+   personalAddress:String
+   aboutMe:String
 ): userConfiguration
 editUserConfiguration(
    idUserConfiguration: ID!
@@ -244,7 +269,11 @@ editUserConfiguration(
    showNotificationsToLevel:Int
    optionConfiguration1:String
    optionConfiguration2:String
-   optionConfiguration3:String         
+   optionConfiguration3:String
+   personalPhone:String
+   personalEmail:String
+   personalAddress:String
+   aboutMe:String
 ): userConfiguration
 
 `
@@ -306,12 +335,16 @@ export const editUserConfiguration = async (root, args, { currentUser }) => {
    if (args.standardJobRoleDescription) uC.standardJobRoleDescription = args.standardJobRoleDescription
    if (args.idcompanyJobRole) uC.idcompanyJobRole = args.idcompanyJobRole
    if (args.companyJobRoleDescription) uC.companyJobRoleDescription = args.companyJobRoleDescription
-   if (args.userProfileImage) uC.userProfileImage = args.userProfileImage
    if (args.theme) uC.theme = args.theme
+   if (args.userProfileImage) uC.userProfileImage = args.userProfileImage
    if (args.showNotificationsToLevel) uC.showNotificationsToLevel = args.showNotificationsToLevel
    if (args.optionConfiguration1) uC.optionConfiguration1 = args.optionConfiguration1
    if (args.optionConfiguration2) uC.optionConfiguration2 = args.optionConfiguration2
    if (args.optionConfiguration3) uC.optionConfiguration3 = args.optionConfiguration3
+   if (args.personalPhone) uC.personalPhone = args.personalPhone
+   if (args.personalEmail) uC.personalEmail = args.personalEmail
+   if (args.personalAddress) uC.personalAddress = args.personalAddress
+   if (args.aboutMe) uC.aboutMe = args.aboutMe
    
    try {
       await uC.save()

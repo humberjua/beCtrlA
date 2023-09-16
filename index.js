@@ -21,7 +21,7 @@ import { ApolloLogPlugin } from 'apollo-log'
 /*
    Importante activar cuando se quiera enviar notificaciones
 */
-// import './toClients/sendNotifications.js'
+import './toClients/sendNotifications.js'
 
 dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET

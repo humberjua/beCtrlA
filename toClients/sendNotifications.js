@@ -6,7 +6,7 @@ let expo = new Expo({ accessToken: process.env.EXPO_ACCESS_TOKEN });
 
 // Create the messages that you want to send to clients
 let messages = [];
-const somePushTokens=['ExponentPushToken[iWeCs9KM7OKomnkbaz80PK]','ExponentPushToken[vLSh-UCFs7yWMtM2jurSLl]', 'ExponentPushToken[DtyD9kGHwsIFfwZdy033Qb]']
+const somePushTokens=['ExponentPushToken[bZF1rbM_GhxNMqZaNay3dh]','ExponentPushToken[vLSh-UCFs7yWMtM2jurSLl]', 'ExponentPushToken[DtyD9kGHwsIFfwZdy033Qb]']
 // const somePushTokens=[]
 
 // somePushTokens deberá ser una función que se autoejecute cada cierta cantidad de tiempo... 1 min por ejemplo
