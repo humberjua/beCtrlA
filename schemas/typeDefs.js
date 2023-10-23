@@ -22,18 +22,23 @@ import { employeeActivity, gqlEA } from '../models/employeeActivity.js'
 import { gqlS3, gqlQS3, gqlMS3 } from '../models/gqlS3.js'
 import { gqlCC, gqlQCC, gqlMCC } from '../models/companyContract.js'
 import {  gql } from "apollo-server"
+import { GraphQLScalarType } from 'graphql'
 
+const Upload = new GraphQLScalarType({ name: "Upload" });
 
 const typeDefs = gql`
-   scalar Upload
+   
+   scalar Upload 
    
    enum YesNo {
       YES
       NO
    }
+
    type Token {
       value: String!
    }
+
    ${gqlCD} ${gqlCBU} ${gqlSS} ${gqlCS} ${gqlSJR} ${gqlCJR} ${gqlUser} ${gqlUC} ${gqlRQ} ${gqlEP} ${gqlEC}
    ${gqlEM} ${gqlST} ${gqlT} ${gqlChart} ${gqlUserChart} ${gqlChat} ${gqlNotification} ${gqlRSFC} ${gqlEA}
    ${gqlS3} ${gqlUD} ${gqlCC}
@@ -57,6 +62,7 @@ const typeDefs = gql`
       ): Token
    }
 `
+
 // En el caso del login se piden 4 argumentos, de los cuales el usuario solamente escribe 2 
 // (userName y password), los otros 2 los genera el sistema por el cual se esté logeando
 

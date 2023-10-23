@@ -12,29 +12,21 @@ import resolvers from './schemas/resolvers.js'
 
 import { ApolloLogPlugin } from 'apollo-log'
 
-//import { use } from "bcrypt/promises.js"
-//import { graphql } from "graphql"
-//import { graphqlUploadExpress }  from 'graphql-upload'
-
-// import { print } from 'graphql'
-
 /*
    Importante activar cuando se quiera enviar notificaciones
 */
-import './toClients/sendNotifications.js'
+// import './toClients/sendNotifications.js'
 
 dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET
 let PORT = process.env.PORT || 5000
-
-//index.use(graphqlUploadExpress({maxFileSize:1000000000,maxFiles:10}))
 
 const plugins = [ApolloLogPlugin({})];
 const server = new ApolloServer({
    typeDefs,
    resolvers,
    // plugins,
-   // uploads:false,
+   // uploads:true,   
    context: async ({ req }) => {
       const auth = req ? req.headers.authorization : null      
       if (auth && auth.toLowerCase().startsWith("bearer ")) {     

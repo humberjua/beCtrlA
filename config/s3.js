@@ -14,6 +14,6 @@ const s3 = new aws.S3({
       Bucket: process.env.AWS_BUCKET        
     }   
   })
-
+  
   console.log('s3\n', s3)
   export default s3
