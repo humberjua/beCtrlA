@@ -1,51 +1,69 @@
-import { ApolloServer } from "apollo-server"
+import express from 'express'
+import { ApolloServer } from "apollo-server-express"
+// import { ApolloLogPlugin } from 'apollo-log'
+
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
+import { PORT, JWT_SECRET } from './config/calls.js'
 
 import './config/db.js'
 
 import { user } from './models/user.js'  
-import './config/s3.js'    //debería abrir la conexión con el servicio aws s3
+import './config/s3.js'    //conexión con el servicio aws s3
 
 import typeDefs from './schemas/typeDefs.js'
 import resolvers from './schemas/resolvers.js'
 
-import { ApolloLogPlugin } from 'apollo-log'
+import { makeExecutableSchema } from '@graphql-tools/schema'
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs'
 
 /*
    Importante activar cuando se quiera enviar notificaciones
 */
 // import './toClients/sendNotifications.js'
 
-dotenv.config()
-const JWT_SECRET = process.env.JWT_SECRET
-let PORT = process.env.PORT || 5000
 
-const plugins = [ApolloLogPlugin({})];
-const server = new ApolloServer({
-   typeDefs,
-   resolvers,
-   // plugins,
-   // uploads:true,   
-   context: async ({ req }) => {
-      const auth = req ? req.headers.authorization : null      
-      if (auth && auth.toLowerCase().startsWith("bearer ")) {     
-         
-         // jwt.expiresIn = '1d'
-         
-         console.info('desde dentro del apollo server\n', auth)
-         const token = auth.substring(7).toString()
-         
-         const {id} = jwt.verify(token, JWT_SECRET)
-         const currentUser = await user.findById(id).exec()
-         
-         console.log('currentUser=\n', currentUser)
-         return {currentUser}
-      }
-   }   
-})
+const app = express()
 
-//server.applyMiddleware()
-server.listen(PORT).then(({ url }) => {
-   console.log(`Server ready at ${url}`)
+const schema = makeExecutableSchema({typeDefs, resolvers})
+
+// const plugins = [ApolloLogPlugin({})];
+const startApolloServer = async () => {
+   const server = new ApolloServer({
+      schema,
+      csrfPrevention: false,  //Esto podría estar normalmente en true y ponerse en false a la hora de subir un archivo...      
+      // plugins,   
+      context: async ({ req }) => {
+         // console.log(req)
+         const auth = req ? req.headers.authorization : null      
+         if (auth && auth.toLowerCase().startsWith("bearer ")) {     
+            
+            // jwt.expiresIn = '1d'
+            
+            // console.info('desde dentro del apollo server\n', auth)
+            const token = auth.substring(7).toString()
+            
+            const {id} = jwt.verify(token, JWT_SECRET)
+            const currentUser = await user.findById(id).exec()
+            
+            console.log('currentUser=\n', currentUser)
+            return {currentUser}
+         }
+      }   
+   })
+
+   app.use(graphqlUploadExpress({
+      maxFileSize: 1000000000,
+      maxFiles: 10
+   }))
+
+   await server.start()
+
+   server.applyMiddleware({app, path: '/graphql'})
+   
+}
+
+startApolloServer()
+
+app.listen(PORT, () => {
+   console.log(`server is running at http://localhost:${PORT}/graphql`)
 })

@@ -21,10 +21,7 @@ import { riskStatsFromCompany, gqlRSFC } from '../models/riskStatsFromCompany.js
 import { employeeActivity, gqlEA } from '../models/employeeActivity.js'  
 import { gqlS3, gqlQS3, gqlMS3 } from '../models/gqlS3.js'
 import { gqlCC, gqlQCC, gqlMCC } from '../models/companyContract.js'
-import {  gql } from "apollo-server"
-import { GraphQLScalarType } from 'graphql'
-
-const Upload = new GraphQLScalarType({ name: "Upload" });
+import {  gql } from "apollo-server-express"
 
 const typeDefs = gql`
    

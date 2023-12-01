@@ -129,7 +129,7 @@ export const chat = mongoose.model('chat', schema)
 
 
 //definitions (type)
-export const gqlChat = `
+export const gqlChat = `#graphql
 type chat {
    idChat:ID!
    idUser:ID!
@@ -171,7 +171,7 @@ lastMsgBy2Users(idUser:ID!,idUserTo:ID!): chat
 `
 
 //definitions (mutation)
-export const gqlMChat = `
+export const gqlMChat = `#graphql
 addNewChat(
    idUser:ID!
    idEmployee:ID!

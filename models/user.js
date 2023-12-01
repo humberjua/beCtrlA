@@ -167,7 +167,7 @@ const saltRounds = 10         //constant used by bcrypt in order to enlarged or 
 //bigger values will be more secure but it will take more process time, a common good value is 10
 
 //definitions (type)
-export const gqlUser = `
+export const gqlUser = `#graphql
 type user {
    idUser:ID!
    idEmployee:ID!
@@ -203,7 +203,7 @@ type user {
 `
 
 //definitions (query)
-export const gqlQUser = `
+export const gqlQUser = `#graphql
 allUsers: Int!
 totalUsersFromCompany(companyName:String!, isCompanyAppAdmin:Boolean): Int!
 allUsersFromCompany(companyName:String!, isCompanyAppAdmin: Boolean): [user]!
@@ -213,7 +213,7 @@ me:user
 `
 
 //definitions (mutation)
-export const gqlMUser = `
+export const gqlMUser = `#graphql
 addNewUser(
    idEmployee: ID!
    password: String!

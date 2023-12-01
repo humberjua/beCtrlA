@@ -94,10 +94,11 @@ import {
    addNewCompanyContract, editCompanyContract 
 } from '../models/companyContract.js'
 
-import '../config/s3.js'    //debería abrir la conexión con el servicio aws s3
+import '../config/s3.js'    // conexión con el servicio aws s3
 
 import {
-   gqlS3, singleUploadLocal, multipleUploadLocal,
+   gqlS3, getFiles, getFile,
+   singleUploadLocal, multipleUploadLocal,
    singleUploadS3, multipleUploadS3
 } from '../models/gqlS3.js'
 
@@ -107,9 +108,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 
-//import { use } from "bcrypt/promises.js"
-//import { graphql } from "graphql"
-//import { graphqlUploadExpress }  from 'graphql-upload'
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs'
 
 import '../config/db.js'
 
@@ -118,6 +117,9 @@ const JWT_SECRET = process.env.JWT_SECRET
 let PORT = process.env.PORT || 5000
 
 const resolvers = {
+
+   Upload: {GraphQLUpload},
+
    Query: {
 
       // companyData 
@@ -219,12 +221,14 @@ const resolvers = {
       // companyContract
       contractsCount,
       allContracts,
-      findContract
+      findContract,
       // Está faltando agregar las querys propias de las estadísticas (employeeActivity, riskStatsFromCompany),
       // esto tambièn implica agregarlas en la string function gql
 
       // A continucación debe ir la query del servicio AWS S3 (falta todavía)
       // uploadedFiles                  //Should returns the number of uploadedfiles
+      getFiles,
+      getFile
 
    },
    Mutation: {

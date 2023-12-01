@@ -81,7 +81,7 @@ export const companyData = mongoose.model('companyData', schema)
 
 
 //definitions (type)
-export const gqlCD =`
+export const gqlCD =`#graphql
 type companyData {
    idCompany: ID!
    companyName: String!
@@ -150,7 +150,6 @@ export const allCompanies = async () => {
 export const findCompany = async (root, args) => {      
    return await companyData.findOne({ companyName: args.companyName })   //returns the data of the company sought         
 }
-
 
 //resolvers (mutation)
 export const addNewCompany = async (root, args, { currentUser }) => {         

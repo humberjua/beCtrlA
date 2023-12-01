@@ -5,38 +5,33 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.441.0",
+    "@aws-sdk/lib-storage": "^3.461.0",
+    "@aws-sdk/s3-request-presigner": "^3.441.0",
     "@babel/eslint-parser": "7.19.1",
+    "@graphql-tools/schema": "^10.0.2",
     "apollo-log": "^1.1.0",
     "apollo-server": "3.10.3",
+    "apollo-server-express": "^3.13.0",
     "aws-sdk": "2.1248.0",
     "bcrypt": "5.1.0",
     "dotenv": "16.0.3",
     "expo-server-sdk": "^3.7.0",
+    "express": "^4.18.2",
     "graphql": "16.6.0",
+    "graphql-middleware": "^6.1.35",
     "graphql-upload": "16.0.2",
     "jsonwebtoken": "8.5.1",
     "mongoose": "6.6.5",
     "mongoose-unique-validator": "3.1.0",
     "nodemon": "^2.0.20",
     "uuid": "9.0.0"
-  },
-  "devDependencies": {
-    "babel-eslint": "10.1.0",
-    "eslint-config-standard": "17.0.0",
-    "eslint-config-standard-jsx": "11.0.0",
-    "eslint-config-standard-react": "11.0.1",
-    "eslint-plugin-import": "2.26.0",
-    "eslint-plugin-node": "11.1.0",
-    "eslint-plugin-promise": "6.1.0",
-    "eslint-plugin-react": "7.31.10",
-    "standard": "^17.0.0"
   },
   "private": true
 }

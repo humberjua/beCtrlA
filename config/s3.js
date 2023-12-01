@@ -9,11 +9,11 @@ const s3 = new aws.S3({
       secretAccessKey: process.env.SECRET_ACCESS_KEY        
     },
    region: process.env.REGION,    
-   params: {       
-      ACL: 'public-read',                          //ver acá si conviene esto, o si se hará por validación de grupo de usuarios
-      Bucket: process.env.AWS_BUCKET        
+   params: {      
+      Bucket: process.env.AWS_BUCKET,
+      // ACL: 'FULL_CONTROL'
     }   
   })
   
-  console.log('s3\n', s3)
+  console.log('Connected with AWS S3, at:', s3.endpoint.host)
   export default s3
