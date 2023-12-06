@@ -118,7 +118,7 @@ const schema = new mongoose.Schema({
       type: String,
       required: true
    }
-})
+}, {timestamps: true})
 // token is unique for each device and is received on the BE side, each time users login
 schema.plugin(uniqueValidator)
 

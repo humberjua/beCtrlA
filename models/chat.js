@@ -121,7 +121,7 @@ const schema = new mongoose.Schema({
       type: Boolean,
       required: true
    }
-})
+}, {timestamps: true})
 
 schema.plugin(uniqueValidator)
 

@@ -202,7 +202,7 @@ const schema = new mongoose.Schema({
       type: String,     //Averiguar para este caso que es lo que realmente conviene
       required:false
    }
-})
+}, {timestamps: true})
 
 schema.plugin(uniqueValidator)
 

@@ -47,7 +47,7 @@ const schema = new mongoose.Schema({
         unique: false,
         required: false
     }
-})
+}, {timestamps: true})
 
 schema.plugin(uniqueValidator)
 
