@@ -30,7 +30,7 @@ const schema = makeExecutableSchema({typeDefs, resolvers})
 const startApolloServer = async () => {
    const server = new ApolloServer({
       schema,
-      csrfPrevention: false,  //Esto podría estar normalmente en true y ponerse en false a la hora de subir un archivo...      
+      csrfPrevention: false,  //Esto podría estar normalmente en true y ponerse en false a la hora de subir un archivo...            
       // plugins,   
       context: async ({ req }) => {
          // console.log(req)

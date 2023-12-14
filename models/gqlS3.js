@@ -171,12 +171,16 @@ async function processUpload (file) {
 
 //Quite similar to the previous function but uploads one single file to s3 storage if its called with singleUploadS3 function, 
 //And this function can be called multiple times with multipleUploadS3 function as well in order to upload multiple files
-let processUploadS3 = async (file)=>{    
+let processUploadS3 = async (file)=>{
+    file.name ? file.filename=file.name : file.filename = file.filename    
+    console.log('file into processUploadS3\n', file)
     const {createReadStream, mimetype, encoding, filename} = await file;
     const extension = filename.split('.').pop()
     const newName = `${uuid()}.${extension}`
     const newSuccessMessage = `Uploaded file <${filename}>, as <${newName}>. On cloud AWS S3`
-    let stream = createReadStream();
+
+    let stream = file.createReadStream();
+    // let stream = fs.createReadStream(file.uri);
     const {Location} = await s3.upload({
         Key: newName,
         Body: stream,
@@ -286,7 +290,10 @@ export async function multipleUploadLocal (_, {files}, { currentUser }) {
 }
 export async function singleUploadS3 (_, {file}, {currentUser}) {    
     // if (!currentUser) throw new AuthenticationError('Bad credentials')
-    if (filesAccepted(file.file.mimetype)) return await processUploadS3(file.file)     
+    // console.log(file)
+    // if (filesAccepted(file.mimeType.split('/').pop())) return await processUploadS3(file.file)
+    const result = file.file ? await processUploadS3(file.file) : await processUploadS3(file)
+    return await result
 }
 export async function multipleUploadS3 (_, {files}, { currentUser }) {
     // if (!currentUser) throw new AuthenticationError('Bad credentials')
