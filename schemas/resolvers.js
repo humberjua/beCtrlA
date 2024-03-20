@@ -97,7 +97,8 @@ import {
 import '../config/s3.js'    // conexión con el servicio aws s3
 
 import {
-   gqlS3, getFiles, getFile,
+   gqlS3, getFiles, getFile, getStoredFiles, getStoredFile, getFileURL, 
+   // downloadFile,
    singleUploadLocal, multipleUploadLocal,
    singleUploadS3, multipleUploadS3
 } from '../models/gqlS3.js'
@@ -228,7 +229,11 @@ const resolvers = {
       // A continucación debe ir la query del servicio AWS S3 (falta todavía)
       // uploadedFiles                  //Should returns the number of uploadedfiles
       getFiles,
-      getFile
+      getFile,
+      getStoredFiles,
+      getStoredFile,
+      getFileURL,
+      // downloadFile
 
    },
    Mutation: {

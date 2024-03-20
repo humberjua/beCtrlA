@@ -45,7 +45,7 @@ const startApolloServer = async () => {
             const {id} = jwt.verify(token, JWT_SECRET)
             const currentUser = await user.findById(id).exec()
             
-            console.log('currentUser=\n', currentUser)
+            // console.log('currentUser=\n', currentUser)
             return {currentUser}
          }
       }   

@@ -3,12 +3,12 @@ import {v4 as uuid} from 'uuid'
 import s3 from '../config/s3.js'
 import { allStandardTickets } from "./standardTicket.js"
 import dotenv from 'dotenv'
-// import {GetObjectCommand} from '@aws-sdk/client-s3'
-// import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3"
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import mongoose from "mongoose"
 import uniqueValidator from "mongoose-unique-validator"
 import { AuthenticationError, UserInputError } from "apollo-server"
+
 
 dotenv.config()
 
@@ -53,7 +53,6 @@ schema.plugin(uniqueValidator)
 
 export const storedFile = mongoose.model('storedFile', schema) 
 
-
 //definitions (Type)
 export const gqlS3 =`#graphql    
     type File {
@@ -72,6 +71,10 @@ export const gqlS3 =`#graphql
 export const gqlQS3 =`#graphql
 getFiles:[File]
 getFile(filename:String!):File
+getStoredFiles:[File]
+getStoredFile(filename:String!):File
+getFileURL(filename:String!):String
+# downloadFile(filename:String!):File
 
 `
 
@@ -84,14 +87,60 @@ multipleUploadS3 (files: [Upload]): [File]
 
 `
 
+// Function to obtain signedURL for the image
+export const getFileURL = async (_, {filename}) => {    
+    const client = new S3Client({
+        region: process.env.REGION,
+        credentials: {
+            accessKeyId: process.env.ACCESS_KEY_ID,
+            secretAccessKey: process.env.SECRET_ACCESS_KEY
+        }
+    })
+    // console.info('filename\n', filename)
+    const command = new GetObjectCommand({
+        Bucket: process.env.AWS_BUCKET,
+        Key: filename
+    })
+    // Por ahora dura 1 hora
+    return await getSignedUrl(client, command, {expiresIn: 3600 })
+}
+
+//Internal function to obtain signedURL for the image
+const getFileURL_2 = async (filename) => {    
+    const client = new S3Client({
+        region: process.env.REGION,
+        credentials: {
+            accessKeyId: process.env.ACCESS_KEY_ID,
+            secretAccessKey: process.env.SECRET_ACCESS_KEY
+        }
+    })
+    // console.info(filename)
+    const command = new GetObjectCommand({
+        Bucket: process.env.AWS_BUCKET,
+        Key: filename
+    })
+    // Por ahora dura 1 hora
+    return await getSignedUrl(client, command, {expiresIn: 3600 })
+}
+
+
 //resolvers (Query)
+//MongoQuery for storedFile collection
+export const getStoredFiles = async () => {
+    return await storedFile.find({})
+}
+export const getStoredFile = async (_, {filename}) => {
+    return await storedFile.findOne({ filename: filename })
+}
+//AWS S3 Query
 export const getFiles = async () => {
     // This function returns the stored files list from Amazon S3.
     const { Contents } =  await s3.listObjects({
         Bucket: process.env.AWS_BUCKET
     }).promise()
-
-    return Contents.map(el => {
+    
+    return Contents.map(async el => {
+        
         return (
             {
                 filename: el.Key,
@@ -100,35 +149,61 @@ export const getFiles = async () => {
                 success: true,
                 message: `Last Modified: ${el.LastModified.toLocaleDateString()}, ${el.LastModified.toLocaleTimeString()}, size:${Math.round(el.Size/1024)}[MB]`,
                 location: `${s3.endpoint.protocol}//${process.env.AWS_BUCKET}.${s3.endpoint.host}/${el.Key}`,
-                url: ''
+                url: await getFileURL_2(el.Key)
             }
         )
     })
 }
 
 export const getFile = async (_, {filename}) => {
-    console.log(filename)
+    
     const { Contents } =  await s3.listObjects({
-        Bucket: process.env.AWS_BUCKET,
-        Key: filename
+        Bucket: process.env.AWS_BUCKET
     }).promise()
-
-    return Contents.map(async el => {
-
-        return (
-            {
-                filename: el.Key,
-                mimetype: el.Key.split('.').pop(),
-                encoding: el.StorageClass,
-                success: true,
-                message: `Last Modified: ${el.LastModified.toLocaleDateString()}, ${el.LastModified.toLocaleTimeString()}, size:${Math.round(el.Size/1024)}[MB]`,
-                location: `${s3.endpoint.protocol}//${process.env.AWS_BUCKET}.${s3.endpoint.host}/${el.Key}`,
-                url: ''
-            }
-        )       
-    })
+    
+    let result = Contents.filter(el => el.Key === filename)
+    if (result.length === 0) return
+    let tempUrl = await getFileURL_2(result[0].Key)
+    if (result) {
+        return {
+            filename: result[0].Key,
+            mimetype: result[0].Key.split('.').pop(),
+            encoding: result[0].StorageClass,
+            success: true,
+            message: `Last Modified: ${result[0].LastModified.toLocaleDateString()}, ${result[0].LastModified.toLocaleTimeString()}, size:${Math.round(result[0].Size/1024)}[MB]`,
+            location: `${s3.endpoint.protocol}//${process.env.AWS_BUCKET}.${s3.endpoint.host}/${result[0].Key}`,
+            url: tempUrl
+        }
+    }
 }
 
+// export async function downloadFile (_, {filename}) {
+//     const client = new S3Client({
+//         region: process.env.REGION,
+//         credentials: {
+//             accessKeyId: process.env.ACCESS_KEY_ID,
+//             secretAccessKey: process.env.SECRET_ACCESS_KEY
+//         }
+//     })
+//     const command = new GetObjectCommand({
+//         Bucket: process.env.AWS_BUCKET,
+//         Key: filename
+//     })
+//     let result
+//     try {
+//         result = await client.send(command) 
+//         if (result) {
+//             const signedURL = await getSignedUrl(client, command, {expiresIn: 3600})
+//             let fullResponse = { ...result, 'url':signedURL }
+//             console.log(fullResponse)
+//             result.Body.pipe(fs.createWriteStream(`../images/${filename}`))
+//             return fullResponse
+//         }
+//         return result.Contents
+//     } catch (error) {
+//         result = "ups..."
+//     }
+// }
 
 
 //resolvers (Mutation)
@@ -180,7 +255,7 @@ let processUploadS3 = async (file)=>{
     const newSuccessMessage = `Uploaded file <${filename}>, as <${newName}>. On cloud AWS S3`
 
     let stream = file.createReadStream();
-    // let stream = fs.createReadStream(file.uri);
+    
     const {Location} = await s3.upload({
         Key: newName,
         Body: stream,
@@ -192,7 +267,7 @@ let processUploadS3 = async (file)=>{
         encoding,
         success: true,
         message: newSuccessMessage,        
-        url: ''
+        url: await getFileURL_2(newName) // no tiene sentido guardarla ya que es temporal por 1 hora...
     }
     return new Promise(async (resolve,reject) => {
         if (Location){      
@@ -265,16 +340,20 @@ function filesAccepted () {
 
 
 export async function singleUploadLocal (_, {file}, { currentUser }) {
-    
-    // if (!currentUser) throw new AuthenticationError('Bad credentials')
+    if (!currentUser) throw new AuthenticationError('Bad credentials')
+    let newFile
+    file.file? newFile = file.file : newFile = file
 
-    if (filesAccepted(file.file.mimetype)) return await processUpload(file.file)  
+    //if (filesAccepted(file.file.mimetype)) return await processUpload(file.file)  
+    return await processUpload(newFile)
 
 }
 export async function multipleUploadLocal (_, {files}, { currentUser }) {
-    // if (!currentUser) throw new AuthenticationError('Bad credentials')
+    if (!currentUser) throw new AuthenticationError('Bad credentials')
+    let newFiles
+    files.files? newFiles = files.files : newFiles = files
     
-    const filesServer = await Promise.all(files.map(({promise}) => promise))
+    const filesServer = await Promise.all(newFiles.map(({promise}) => promise))
 
     let acepted = filesServer.filter((file) => {
         if (filesAccepted(file.mimetype)) {
@@ -289,16 +368,19 @@ export async function multipleUploadLocal (_, {files}, { currentUser }) {
     return obj;
 }
 export async function singleUploadS3 (_, {file}, {currentUser}) {    
-    // if (!currentUser) throw new AuthenticationError('Bad credentials')
-    // console.log(file)
+    if (!currentUser) throw new AuthenticationError('Bad credentials')
+    let newFile
+    file.file? newFile = file.file : newFile = file
+
     // if (filesAccepted(file.mimeType.split('/').pop())) return await processUploadS3(file.file)
-    const result = file.file ? await processUploadS3(file.file) : await processUploadS3(file)
-    return await result
+    return await processUploadS3(newFile)
 }
 export async function multipleUploadS3 (_, {files}, { currentUser }) {
-    // if (!currentUser) throw new AuthenticationError('Bad credentials')
+    if (!currentUser) throw new AuthenticationError('Bad credentials')
+    let newFiles
+    files.files? newFiles = files.files : newFiles = files
 
-    const filesServer = await Promise.all(files.map(({promise}) => promise))
+    const filesServer = await Promise.all(newFiles.map(({promise}) => promise))
 
     let acepted = filesServer.filter((file) => {
         if (filesAccepted(file.mimetype)) {

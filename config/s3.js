@@ -15,5 +15,6 @@ const s3 = new aws.S3({
     }   
   })
   
+  
   console.log('Connected with AWS S3, at:', s3.endpoint.host)
   export default s3
